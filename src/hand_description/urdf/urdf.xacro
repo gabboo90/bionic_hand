@@ -1,0 +1,975 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- This URDF was automatically created by SolidWorks to URDF Exporter! Originally created by Stephen Brawner (brawner@gmail.com) 
+     Commit Version: 1.6.0-4-g7f85cfe  Build Version: 1.6.7995.38578
+     For more information, please see http://wiki.ros.org/sw_urdf_exporter -->
+<robot
+  name="bionic_hand">
+
+  <link name="world"/>
+    <!-- Joint um die Hand richtig zu orientieren -->
+  <joint name="world_to_base" type="fixed">
+    <parent link="world"/>
+    <child link="base_link"/>
+    <origin xyz="0 0 0" rpy="3.14159 0 0"/>  <!-- 180° um X-Achse -->
+  </joint>
+
+
+  <link
+    name="base_link">
+    <inertial>
+      <origin
+        xyz="0.03958 -0.029691 0.015244"
+        rpy="0 0 0" />
+      <mass
+        value="0.65238" />
+      <inertia
+        ixx="0.00082112"
+        ixy="8.9286E-05"
+        ixz="3.3707E-05"
+        iyy="0.0014836"
+        iyz="-1.6843E-05"
+        izz="0.0010714" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://hand_description/meshes/base_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.79216 0.81961 0.93333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://hand_description/meshes/base_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <link
+    name="thumb">
+    <inertial>
+      <origin
+        xyz="-0.0310468955754792 0.0146728189340897 -0.01641634870464"
+        rpy="0 0 0" />
+      <mass
+        value="0.0188289535395376" />
+      <inertia
+        ixx="4.4591837920961E-06"
+        ixy="-5.53558786935455E-07"
+        ixz="1.37851662185635E-06"
+        iyy="6.98550535645012E-06"
+        iyz="6.4443900077485E-07"
+        izz="6.12233605411629E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://hand_description/meshes/thumb.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://hand_description/meshes/thumb.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="thumb_opposition"
+    type="revolute">
+    <origin
+      xyz="-0.044432 -0.029203 0.0043878"
+      rpy="1.987 0.073988 0.015374" />
+    <parent
+      link="base_link" />
+    <child
+      link="thumb" />
+    <axis
+      xyz="0.98363 -0.0005966 -0.18021" />
+    <limit lower="-1.57" upper="1.57" effort="10" velocity="1"/>
+  </joint>
+  <link
+    name="thumb_rotation">
+    <inertial>
+      <origin
+        xyz="0.00752395524320154 0.00186096944336717 -0.00320605716681524"
+        rpy="0 0 0" />
+      <mass
+        value="0.00899609220397239" />
+      <inertia
+        ixx="7.08057279665508E-07"
+        ixy="1.356946672071E-07"
+        ixz="-2.45328917532297E-07"
+        iyy="1.18390467499842E-06"
+        iyz="1.18726954796414E-07"
+        izz="1.06737478504705E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://hand_description/meshes/thumb_rotation.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://hand_description/meshes/thumb_rotation.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="thumb_rotation"
+    type="revolute">
+    <origin
+      xyz="-0.031243 0.027955 -0.036949"
+      rpy="0 0 0" />
+    <parent
+      link="thumb" />
+    <child
+      link="thumb_rotation" />
+    <axis
+      xyz="0.1505 -0.54739 0.82323" />
+    <limit lower="-1.57" upper="1.57" effort="10" velocity="1"/>
+  </joint>
+  <link
+    name="thumb_mcp_flexion">
+    <inertial>
+      <origin
+        xyz="-0.0155706619077729 0.00107314934487866 0.00626879225058935"
+        rpy="0 0 0" />
+      <mass
+        value="0.00685717177436016" />
+      <inertia
+        ixx="3.11754853031797E-07"
+        ixy="9.27034426999804E-08"
+        ixz="6.38349131015559E-08"
+        iyy="1.08304711854349E-06"
+        iyz="-5.41424395732265E-09"
+        izz="1.32280787234435E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://hand_description/meshes/thumb_mcp_flexion.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://hand_description/meshes/thumb_mcp_flexion.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="thumb_mcp_flexion"
+    type="revolute">
+    <origin
+      xyz="0.00073166 0.0086002 -0.012265"
+      rpy="2.3445 -0.40101 -0.39979" />
+    <parent
+      link="thumb_rotation" />
+    <child
+      link="thumb_mcp_flexion" />
+    <axis
+      xyz="0.17549 -0.00010644 0.98448" />
+    <limit lower="-1.57" upper="1.57" effort="10" velocity="1"/>
+  </joint>
+  <link
+    name="thumb_pip">
+    <inertial>
+      <origin
+        xyz="-0.034785521476525 -0.0200301266994405 -0.0109240437666255"
+        rpy="0 0 0" />
+      <mass
+        value="0.00215756775239621" />
+      <inertia
+        ixx="5.47658702851547E-08"
+        ixy="1.88954857927782E-08"
+        ixz="3.69651145948474E-08"
+        iyy="2.22364902291839E-07"
+        iyz="-3.41420293869522E-09"
+        izz="2.52589614872599E-07" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://hand_description/meshes/thumb_pip.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://hand_description/meshes/thumb_pip.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="thumb_pip"
+    type="revolute">
+    <origin
+      xyz="0.0024822 0 0.013925"
+      rpy="-0.12191 -0.047997 -0.75062" />
+    <parent
+      link="thumb_mcp_flexion" />
+    <child
+      link="thumb_pip" />
+    <axis
+      xyz="0.17549 -0.00010644 0.98448" />
+    <limit lower="-1.57" upper="1.57" effort="10" velocity="1"/>
+  </joint>
+  <link
+    name="thumb_dip">
+    <inertial>
+      <origin
+        xyz="-0.0568441579315472 -0.0299741007495122 -0.0115227782932227"
+        rpy="0 0 0" />
+      <mass
+        value="0.00422716702426551" />
+      <inertia
+        ixx="1.40124491068462E-07"
+        ixy="5.49789778918847E-09"
+        ixz="9.16911669230519E-09"
+        iyy="2.42390316052478E-07"
+        iyz="-1.42163523160784E-08"
+        izz="2.1985487203313E-07" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://hand_description/meshes/thumb_dip.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://hand_description/meshes/thumb_dip.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="thumb_dip"
+    type="revolute">
+    <origin
+      xyz="0.0017489 0 0.0098114"
+      rpy="-0.028947 -0.0023481 -0.16308" />
+    <parent
+      link="thumb_pip" />
+    <child
+      link="thumb_dip" />
+    <axis
+      xyz="0.17549 -0.00010644 0.98448" />
+    <limit lower="-1.57" upper="1.57" effort="10" velocity="1"/>
+  </joint>
+  <link
+    name="index_mcp_adduction">
+    <inertial>
+      <origin
+        xyz="-0.000909500913099874 0.0190949489863932 0.00491034741633578"
+        rpy="0 0 0" />
+      <mass
+        value="0.00962736795097376" />
+      <inertia
+        ixx="3.02657286197391E-06"
+        ixy="3.09347950580268E-08"
+        ixz="-6.74461457482812E-08"
+        iyy="1.66118262653521E-06"
+        iyz="-4.11078346082898E-08"
+        izz="1.78273306499507E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://hand_description/meshes/index_mcp_adduction.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://hand_description/meshes/index_mcp_adduction.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="index_mcp_adduction"
+    type="revolute">
+    <origin
+      xyz="-0.12274 -0.01291 0.0017357"
+      rpy="0.072567 -0.15899 1.3249" />
+    <parent
+      link="base_link" />
+    <child
+      link="index_mcp_adduction" />
+    <axis
+      xyz="0 0 1" />
+    <limit lower="-1.57" upper="1.57" effort="10" velocity="1"/>
+  </joint>
+  <link
+    name="mcp_flexion">
+    <inertial>
+      <origin
+        xyz="-0.0533173021213905 0.0147626054460368 0.0129986079628866"
+        rpy="0 0 0" />
+      <mass
+        value="0.00685716892835977" />
+      <inertia
+        ixx="3.11754907458993E-07"
+        ixy="9.27036913286524E-08"
+        ixz="6.3835062205085E-08"
+        iyy="1.08304734782688E-06"
+        iyz="-5.41431208162088E-09"
+        izz="1.32280813298493E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://hand_description/meshes/mcp_flexion.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://hand_description/meshes/mcp_flexion.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="mcp_flexion"
+    type="revolute">
+    <origin
+      xyz="0 0 -0.011776"
+      rpy="1.5371 0.18609 -1.7503" />
+    <parent
+      link="index_mcp_adduction" />
+    <child
+      link="mcp_flexion" />
+    <axis
+      xyz="0.18501 -0.98218 -0.033085" />
+    <limit lower="-1.57" upper="1.57" effort="10" velocity="1"/>
+  </joint>
+  <link
+    name="index_pip">
+    <inertial>
+      <origin
+        xyz="-0.00071921027308855 0.0754418780201428 -0.00261828059743154"
+        rpy="0 0 0" />
+      <mass
+        value="0.00215757185345749" />
+      <inertia
+        ixx="5.47659303757236E-08"
+        ixy="1.88955206078631E-08"
+        ixz="3.69651316432988E-08"
+        iyy="2.22364914215798E-07"
+        iyz="-3.41423390134448E-09"
+        izz="2.5258965154272E-07" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://hand_description/meshes/index_pip.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://hand_description/meshes/index_pip.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="index_pip"
+    type="revolute">
+    <origin
+      xyz="0.00086974 -0.0046172 -0.00015553"
+      rpy="0.17462 -0.13968 1.3473" />
+    <parent
+      link="mcp_flexion" />
+    <child
+      link="index_pip" />
+    <axis
+      xyz="0.91242 0.37558 -0.1626" />
+    <limit lower="-1.57" upper="1.57" effort="10" velocity="1"/>
+  </joint>
+  <link
+    name="index_dip">
+    <inertial>
+      <origin
+        xyz="-0.049663433720789 0.0678939764373379 0.0116988207491636"
+        rpy="0 0 0" />
+      <mass
+        value="0.00422722698798034" />
+      <inertia
+        ixx="1.40124491068462E-07"
+        ixy="5.49970010114676E-09"
+        ixz="9.17043828961104E-09"
+        iyy="2.42390316052478E-07"
+        iyz="-1.42163523160784E-08"
+        izz="2.1985487203313E-07" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://hand_description/meshes/index_dip.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://hand_description/meshes/index_dip.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="index_dip"
+    type="revolute">
+    <origin
+      xyz="-0.015593 -0.0064185 0.0027788"
+      rpy="-0.087014 -0.022601 -0.50918" />
+    <parent
+      link="index_pip" />
+    <child
+      link="index_dip" />
+    <axis
+      xyz="0.60976 0.78511 -0.10861" />
+    <limit lower="-1.57" upper="1.57" effort="10" velocity="1"/>
+  </joint>
+  <link
+    name="middle_mcp_adduction">
+    <inertial>
+      <origin
+        xyz="-0.000909450467168629 0.0190949569757471 0.00383523237022606"
+        rpy="0 0 0" />
+      <mass
+        value="0.00962696863143676" />
+      <inertia
+        ixx="3.02651051054993E-06"
+        ixy="3.09372772485662E-08"
+        ixz="-6.74557672260281E-08"
+        iyy="1.66112186363944E-06"
+        iyz="-4.11025013715469E-08"
+        izz="1.78272857632479E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://hand_description/meshes/middle_mcp_adduction.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://hand_description/meshes/middle_mcp_adduction.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="middle_mcp_adduction"
+    type="revolute">
+    <origin
+      xyz="-0.11711 -0.043668 7.1028E-05"
+      rpy="0.00055913 -0.00023506 1.9688" />
+    <parent
+      link="base_link" />
+    <child
+      link="middle_mcp_adduction" />
+    <axis
+      xyz="0 0 1" />
+    <limit lower="-1.57" upper="1.57" effort="10" velocity="1"/>
+  </joint>
+  <link
+    name="middle_mcp_flexion">
+    <inertial>
+      <origin
+        xyz="-0.0519554456960688 0.00753293121557026 0.012755073415091"
+        rpy="0 0 0" />
+      <mass
+        value="0.00685717276888302" />
+      <inertia
+        ixx="3.11754985619287E-07"
+        ixy="9.2703667718837E-08"
+        ixz="6.38349758598346E-08"
+        iyy="1.08304727543578E-06"
+        iyz="-5.41432757191383E-09"
+        izz="1.32280811841542E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://hand_description/meshes/middle_mcp_flexion.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://hand_description/meshes/middle_mcp_flexion.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="middle_mcp_flexion"
+    type="revolute">
+    <origin
+      xyz="0 0 -0.0054898"
+      rpy="1.5371 0.18609 -1.7503" />
+    <parent
+      link="middle_mcp_adduction" />
+    <child
+      link="middle_mcp_flexion" />
+    <axis
+      xyz="0.18501 -0.98218 -0.033085" />
+    <limit lower="-1.57" upper="1.57" effort="10" velocity="1"/>
+  </joint>
+  <link
+    name="middle_pip">
+    <inertial>
+      <origin
+        xyz="-0.00336320923855584 0.0743535208498479 -0.00214710314249245"
+        rpy="0 0 0" />
+      <mass
+        value="0.00215756991169526" />
+      <inertia
+        ixx="5.47659006667932E-08"
+        ixy="1.8895491194207E-08"
+        ixz="3.69651213359661E-08"
+        iyy="2.22364882367926E-07"
+        iyz="-3.41421623808281E-09"
+        izz="2.52589609990662E-07" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://hand_description/meshes/middle_pip.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://hand_description/meshes/middle_pip.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="middle_pip"
+    type="revolute">
+    <origin
+      xyz="0.0016955 -0.0090007 -0.00030319"
+      rpy="0.17462 -0.13968 1.3473" />
+    <parent
+      link="middle_mcp_flexion" />
+    <child
+      link="middle_pip" />
+    <axis
+      xyz="0.91242 0.37558 -0.1626" />
+    <limit lower="-1.57" upper="1.57" effort="10" velocity="1"/>
+  </joint>
+  <link
+    name="middle_dip">
+    <inertial>
+      <origin
+        xyz="0.106739753560274 -0.0759754000418421 0.00853638887271739"
+        rpy="0 0 0" />
+      <mass
+        value="0.874241956892011" />
+      <inertia
+        ixx="0.00568656823335348"
+        ixy="0.00325558229252839"
+        ixz="-0.000355799561609033"
+        iyy="0.00520254500125526"
+        iyz="0.00043051569489054"
+        izz="0.00862107145632018" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://hand_description/meshes/middle_dip.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://hand_description/meshes/middle_dip.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="middle_dip"
+    type="revolute">
+    <origin
+      xyz="-0.015085 -0.0062093 0.0026882"
+      rpy="-0.087014 -0.022601 -0.50918" />
+    <parent
+      link="middle_pip" />
+    <child
+      link="middle_dip" />
+    <axis
+      xyz="0.60976 0.78511 -0.10861" />
+    <limit lower="-1.57" upper="1.57" effort="10" velocity="1"/>
+  </joint>
+  <link
+    name="ring_mcp_adduction">
+    <inertial>
+      <origin
+        xyz="-0.000909457557521851 0.0190949416265572 -0.00267807902127339"
+        rpy="0 0 0" />
+      <mass
+        value="0.00962712014194246" />
+      <inertia
+        ixx="3.02653899926774E-06"
+        ixy="3.09363388957076E-08"
+        ixz="-6.74542282660282E-08"
+        iyy="1.66114976091572E-06"
+        iyz="-4.11034520641597E-08"
+        izz="1.7827304967394E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://hand_description/meshes/ring_mcp_adduction.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://hand_description/meshes/ring_mcp_adduction.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="ring_mcp_adduction"
+    type="revolute">
+    <origin
+      xyz="-0.1117 -0.073131 0.0092019"
+      rpy="-0.026216 0.17246 1.597" />
+    <parent
+      link="base_link" />
+    <child
+      link="ring_mcp_adduction" />
+    <axis
+      xyz="0 0 1" />
+    <limit lower="-1.57" upper="1.57" effort="10" velocity="1"/>
+  </joint>
+  <link
+    name="ring_mcp_flexion">
+    <inertial>
+      <origin
+        xyz="-0.0511831496123913 0.00343306459483136 0.0126169662877907"
+        rpy="0 0 0" />
+      <mass
+        value="0.00685716856813488" />
+      <inertia
+        ixx="3.11754835888006E-07"
+        ixy="9.2703667718837E-08"
+        ixz="6.38349886539853E-08"
+        iyy="1.08304706534647E-06"
+        iyz="-5.41431234189951E-09"
+        izz="1.3228077796551E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://hand_description/meshes/ring_mcp_flexion.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://hand_description/meshes/ring_mcp_flexion.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="ring_mcp_flexion"
+    type="revolute">
+    <origin
+      xyz="0 0 -0.0078291"
+      rpy="1.5371 0.18609 -1.7503" />
+    <parent
+      link="ring_mcp_adduction" />
+    <child
+      link="ring_mcp_flexion" />
+    <axis
+      xyz="0.18501 -0.98218 -0.033085" />
+    <limit lower="-1.57" upper="1.57" effort="10" velocity="1"/>
+  </joint>
+  <link
+    name="ring_pip">
+    <inertial>
+      <origin
+        xyz="-0.00579020261104488 0.0733544963824071 -0.00171459348692828"
+        rpy="0 0 0" />
+      <mass
+        value="0.00215757025428515" />
+      <inertia
+        ixx="5.47659109118772E-08"
+        ixy="1.88955010703671E-08"
+        ixz="3.6965125980301E-08"
+        iyy="2.22364893184222E-07"
+        iyz="-3.41422072335685E-09"
+        izz="2.52589617326424E-07" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://hand_description/meshes/ring_pip.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://hand_description/meshes/ring_pip.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="ring_pip"
+    type="revolute">
+    <origin
+      xyz="0.0019756 -0.010488 -0.00035329"
+      rpy="0.17462 -0.13968 1.3473" />
+    <parent
+      link="ring_mcp_flexion" />
+    <child
+      link="ring_pip" />
+    <axis
+      xyz="0.91242 0.37558 -0.1626" />
+    <limit lower="-1.57" upper="1.57" effort="10" velocity="1"/>
+  </joint>
+  <link
+    name="ring_dip">
+    <inertial>
+      <origin
+        xyz="-0.0713339246518604 0.0399915771904844 0.0155586080014634"
+        rpy="0 0 0" />
+      <mass
+        value="0.00422722641889731" />
+      <inertia
+        ixx="1.40124595552413E-07"
+        ixy="5.49976452402463E-09"
+        ixz="9.17048823975347E-09"
+        iyy="2.42397452520076E-07"
+        iyz="-1.42162525469314E-08"
+        izz="2.19861614779452E-07" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://hand_description/meshes/ring_dip.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://hand_description/meshes/ring_dip.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="ring_dip"
+    type="revolute">
+    <origin
+      xyz="0.011763 0.004842 -0.0020962"
+      rpy="-0.087014 -0.022601 -0.50918" />
+    <parent
+      link="ring_pip" />
+    <child
+      link="ring_dip" />
+    <axis
+      xyz="0.60976 0.78511 -0.10861" />
+    <limit lower="-1.57" upper="1.57" effort="10" velocity="1"/>
+  </joint>
+</robot>
