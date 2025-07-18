@@ -1,16 +1,16 @@
 from launch import LaunchDescription
-from launch.actions import IncludeLaunchDescription, ExecuteProcess
+from launch.actions import IncludeLaunchDescription, ExecuteProcess, DeclareLaunchArgument
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch_ros.actions import Node
+from launch.substitutions import LaunchConfiguration
 import os
 from ament_index_python.packages import get_package_share_directory
 
 def generate_launch_description():
     
-    # Leap Motion Environment Variables
-    leap_env = {
-        'LD_LIBRARY_PATH': '/home/gabi/Desktop/bionic_hand/src/leap_node/lib/x64:/home/gabi/Desktop/ros2_ws/leap_extracted/usr/lib/x86_64-linux-gnu:/home/gabi/Desktop/ros2_ws/leap_extracted/usr/lib'
-    }
+    # ROS 2 Environment laden
+    ros_env = os.environ.copy()
+    ros_env['LD_LIBRARY_PATH'] = '/home/gabi/Desktop/bionic_hand/src/leap_node/lib/x64:/home/gabi/Desktop/bionic_hand/src/leap_node/LeapSDK/lib/x64:/opt/ros/jazzy/lib:/opt/ros/jazzy/lib/x86_64-linux-gnu:' + ros_env.get('LD_LIBRARY_PATH', '')
     
     # Leap Motion Daemon
     leapd = ExecuteProcess(
@@ -28,13 +28,12 @@ def generate_launch_description():
     )
     
     # Leap Motion Sample Node
-        # Leap Motion Sample Node
     leap_sample = Node(
         package="leap_node",
         executable="sample_node", 
         name="leap_sample",
-        output="screen"
-        # Kein additional_env - nutzt die globalen Environment-Variablen
+        output="screen",
+        env=ros_env
     )
     
     # Pfad zum display.launch.py
@@ -56,10 +55,19 @@ def generate_launch_description():
         output="screen"
     )
 
+    leap_joint_publisher = Node(
+    package="leap_node",
+    executable="dof_publisher_node",
+    name="leap_joint_publisher",
+    output="screen",
+    env=ros_env
+    )
+
     return LaunchDescription([
         leapd,
         leap_transform,
         leap_sample,
         hand_description_launch,
-        joint_state_publisher_gui
+        # joint_state_publisher_gui,
+        leap_joint_publisher
     ])

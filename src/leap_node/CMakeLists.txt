@@ -42,9 +42,6 @@ target_include_directories(sample_node PUBLIC
 )
 target_link_libraries(sample_node Leap)
 
-rosidl_target_interfaces(sample_node
-  ${PROJECT_NAME} "rosidl_typesupport_cpp"
-)
 
 set_target_properties(sample_node PROPERTIES
   INSTALL_RPATH "${LEAPSDK_DIR}/lib/x64"

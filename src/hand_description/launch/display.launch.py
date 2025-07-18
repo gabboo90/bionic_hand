@@ -25,12 +25,6 @@ def generate_launch_description():
             parameters=[{'robot_description': ParameterValue(Command(['xacro', ' ', LaunchConfiguration('model')]), value_type=str)}]
         ),
         Node(
-            package='joint_state_publisher',
-            executable='joint_state_publisher',
-            name='joint_state_publisher',
-            output='screen'
-        ),
-        Node(
             package='rviz2',
             executable='rviz2',
             name='rviz2',

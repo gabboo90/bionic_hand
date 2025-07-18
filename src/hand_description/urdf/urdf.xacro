@@ -656,7 +656,7 @@
     <child
       link="middle_mcp_flexion" />
     <axis
-      xyz="0.17549 -0.00010644 0.98448" />
+      xyz="-0.17549 0.00010644 -0.98448" />
     <limit
       lower="-1.57" upper="1.57" effort="10" velocity="1"/>
   </joint>
@@ -711,7 +711,7 @@
     <child
       link="middle_pip" />
     <axis
-      xyz="0.17549 -0.00010644 0.98448" />
+      xyz="-0.17549 0.00010644 -0.98448" />
     <limit
       lower="-1.57" upper="1.57" effort="10" velocity="1"/>
   </joint>
