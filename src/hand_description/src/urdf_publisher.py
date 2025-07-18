@@ -10,7 +10,7 @@ class URDFPublisher(Node):
         
         # URDF-Pfad finden
         package_dir = get_package_share_directory('hand_description')
-        urdf_path = os.path.join(package_dir, 'urdf', 'hand.urdf')
+        urdf_path = os.path.join(package_dir, 'urdf', 'urdf.xacro')
         
         # URDF-Datei lesen
         with open(urdf_path, 'r') as f:

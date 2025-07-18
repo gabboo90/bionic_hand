@@ -8,3 +8,4 @@ geometry_msgs/Vector3 direction
 leap_node/FingerData thumb
 leap_node/FingerData index
 leap_node/FingerData middle
+leap_node/FingerData ring
