@@ -1,0 +1,55 @@
+rm -rf ar4_logs && ros2 bag record -a -o ar4_logs
+
+ros2 daemon stop
+ros2 daemon start
+
+
+ros2 launch annin_ar4_driver driver.launch.py include_gripper:=True logger:=debug ar_model:=mk2 
+ros2 launch annin_ar4_driver driver.launch.py control_mode:=trajectory include_gripper:=True logger:=debug ar_model:=mk2
+ros2 launch annin_ar4_driver driver.launch.py control_mode:=forward include_gripper:=True logger:=debug ar_model:=mk2
+
+
+
+
+ros2 launch annin_ar4_moveit_config moveit.launch.py include_gripper:=True logger:=debug AR_MODEL:=mk2
+
+
+colcon build --packages-select annin_ar4_description
+
+
+colcon build --packages-select annin_ar4_description
+source install/setup.bash
+
+
+tree -L 3 -I 'build|install|log' /home/gabi/Desktop/ros2_ws
+
+source ~/Desktop/Handjob_ws/install/setup.bash
+
+/// set a position ///
+
+source ~/Desktop/Handjob_ws/install/setup.bash
+ros2 topic pub /set_position std_msgs/msg/Int32 "data: 512"
+
+
+ros2 topic pub -1 /set_position dynamixel_sdk_custom_interfaces/msg/SetPosition "{id: 4, position: 1337}"
+
+
+. install/setup.bash
+
+
+ros2 run dynamixel_sdk_examples read_write_node
+
+
+ros2 run scservo_ros WritePos /dev/ttyACM1 1 set_position 2000
+
+
+ros2 run leap_node sample_node
+
+
+ros2 run tf2_ros static_transform_publisher 0 0 0 0 0 1.5707  world leap_frame
+
+ros2 run ar4_leap_teleop leap_to_joint_node
+
+
+ls /dev/ttyACM* /dev/ttyUSB*
+
