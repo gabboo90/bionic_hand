@@ -329,6 +329,7 @@
       xyz="0.17549 -0.00010644 0.98448" />
     <limit
       lower="-1.57" upper="1.57" effort="10" velocity="1"/>
+    <mimic joint="thumb_pip" multiplier="0.9"/>
   </joint>
   <link
     name="index_mcp_adduction">
@@ -449,12 +450,12 @@
       <mass
         value="0.0021575700735159" />
       <inertia
-        ixx="5.47658929498861E-08"
+        ixx="5.47658542119838E-08"
         ixy="1.88954712154763E-08"
-        ixz="3.69651213830989E-08"
-        iyy="2.22364898660454E-07"
+        ixz="3.69651100914208E-08"
+        iyy="2.22364898192174E-07"
         iyz="-3.41421563770417E-09"
-        izz="2.52589630171238E-07" />
+        izz="2.52589616879644E-07" />
     </inertial>
     <visual>
       <origin
@@ -549,6 +550,7 @@
       xyz="0.17549 -0.00010644 0.98448" />
     <limit
       lower="-1.57" upper="1.57" effort="10" velocity="1"/>
+    <mimic joint="index_pip" multiplier="0.9"/>
   </joint>
   <link
     name="middle_mcp_adduction">
@@ -656,7 +658,7 @@
     <child
       link="middle_mcp_flexion" />
     <axis
-      xyz="-0.17549 0.00010644 -0.98448" />
+      xyz="0.17549 -0.00010644 0.98448" />
     <limit
       lower="-1.57" upper="1.57" effort="10" velocity="1"/>
   </joint>
@@ -671,7 +673,7 @@
       <inertia
         ixx="5.4765889602427E-08"
         ixy="1.8895496022229E-08"
-        ixz="3.69651226560766E-08"
+        ixz="3.69651213830989E-08"
         iyy="2.22364893977912E-07"
         iyz="-3.41420959985044E-09"
         izz="2.52589615008745E-07" />
@@ -711,7 +713,7 @@
     <child
       link="middle_pip" />
     <axis
-      xyz="-0.17549 0.00010644 -0.98448" />
+      xyz="0.17549 -0.00010644 0.98448" />
     <limit
       lower="-1.57" upper="1.57" effort="10" velocity="1"/>
   </joint>
@@ -769,6 +771,7 @@
       xyz="0.17549 -0.00010644 0.98448" />
     <limit
       lower="-1.57" upper="1.57" effort="10" velocity="1"/>
+    <mimic joint="middle_pip" multiplier="0.9"/>
   </joint>
   <link
     name="ring_mcp_adduction">
@@ -948,7 +951,7 @@
         ixy="5.49920582744171E-09"
         ixz="9.16976614596534E-09"
         iyy="2.42392426432486E-07"
-        iyz="-1.42164439566301E-08"
+        iyz="-1.42164042694292E-08"
         izz="2.19857467650712E-07" />
     </inertial>
     <visual>
@@ -989,5 +992,6 @@
       xyz="0.17549 -0.00010644 0.98448" />
     <limit
       lower="-1.57" upper="1.57" effort="10" velocity="1"/>
+    <mimic joint="ring_pip" multiplier="0.9"/>
   </joint>
 </robot>

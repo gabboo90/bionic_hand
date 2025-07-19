@@ -55,6 +55,22 @@ def generate_launch_description():
         output="screen"
     )
 
+    # Servo Mapper Node - wandelt joint_states in Servo-Kommandos um
+    servo_mapper_node = Node(
+        package="servo_mapper",
+        executable="servo_mapper_node",
+        name="servo_mapper_node",
+        output="screen"
+    )
+
+    # Dynamixel Read Write Node - sendet Kommandos an den Servo
+    read_write_node = Node(
+        package="dynamixel_sdk_examples",
+        executable="read_write_node",
+        name="read_write_node",
+        output="screen"
+    )
+
     leap_joint_publisher = Node(
     package="leap_node",
     executable="dof_publisher_node",
@@ -69,5 +85,7 @@ def generate_launch_description():
         leap_sample,
         hand_description_launch,
         # joint_state_publisher_gui,
+        # servo_mapper_node,
+        # read_write_node,
         leap_joint_publisher
     ])

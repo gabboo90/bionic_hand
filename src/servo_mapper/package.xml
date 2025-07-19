@@ -1,0 +1,16 @@
+<?xml version="3.0"?>
+<package format="3">
+  <name>servo_mapper</name>
+  <version>0.0.1</version>
+  <description>ROS2 Node zum Mapping von JointStates auf Dynamixel- und SCServo-Kommandos</description>
+  <maintainer email="gabi@example.com">Gabi</maintainer>
+  <license>MIT</license>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+  <depend>rclcpp</depend>
+  <depend>sensor_msgs</depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package> 

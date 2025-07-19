@@ -4,6 +4,13 @@ install/
 log/
 src/leap_node/LeapSDK/
 
+# DynamixelSDK - nur ros/ Ordner behalten, Rest ignorieren
+src/DynamixelSDK/
+!src/DynamixelSDK/ros/
+
+# SCServo komplett ignorieren
+src/scservo_ros/
+
 
 # Python cache
 __pycache__/
