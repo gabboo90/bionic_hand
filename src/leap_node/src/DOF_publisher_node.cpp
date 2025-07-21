@@ -15,8 +15,12 @@ public:
     joint_pub_ = this->create_publisher<sensor_msgs::msg::JointState>("/joint_states", 10);
     
     controller_.addListener(listener_);
-    timer_ = this->create_wall_timer(10, std::bind(&MiddleFingerJointPublisher::publish_joints, this));
-    
+    timer_ = this->create_wall_timer(
+      std::chrono::milliseconds(50),
+      std::bind(&MiddleFingerJointPublisher::publish_joints, this)
+    );
+
+
     RCLCPP_INFO(this->get_logger(), "Middle finger joint publisher started (28Hz)");
   }
 

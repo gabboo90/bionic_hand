@@ -14,7 +14,7 @@ class ServoMapperNode : public rclcpp::Node {
 public:
     ServoMapperNode() : Node("servo_mapper_node") {
         joint_sub_ = this->create_subscription<sensor_msgs::msg::JointState>(
-            "/joint_states", 10,
+            "/joint_states", 50,
             std::bind(&ServoMapperNode::joint_callback, this, std::placeholders::_1));
         
         // Publisher für Dynamixel SetPosition-Kommandos
@@ -47,6 +47,55 @@ private:
         {"thumb_pip", 8}
     };
 
+    // === Kalibrierung: Offsets & Multiplikatoren für alle Finger und DOFs ===
+    std::map<std::string, double> offset_map = {
+        {"thumb_opposition", 0.0},
+        {"thumb_rotation", 0.0},
+        {"index_mcp_adduction", 0.0},
+        {"middle_mcp_adduction", 0.0},
+        {"ring_mcp_adduction", 0.0},
+        {"index_mcp_flexion", 0.0},
+        {"index_pip", 0.0},
+        {"middle_mcp_flexion", 0.0},
+        {"middle_pip", 0.0},
+        {"ring_mcp_flexion", 0.0},
+        {"ring_pip", 0.0},
+        {"thumb_mcp_flexion", 0.0},
+        {"thumb_pip", 0.0}
+    };
+    std::map<std::string, double> multiplier_map = {
+        {"thumb_opposition", -1.0},
+        {"thumb_rotation", -1.0},
+        {"index_mcp_adduction", 1.0},
+        {"middle_mcp_adduction", 1.0},
+        {"ring_mcp_adduction", 1.0},
+        {"index_mcp_flexion", 1.0},
+        {"index_pip", 1.0},
+        {"middle_mcp_flexion", 1.0},
+        {"middle_pip", 1.0},
+        {"ring_mcp_flexion", 1.0},
+        {"ring_pip", 1.0},
+        {"thumb_mcp_flexion", 1.0},
+        {"thumb_pip", 1.0}
+    };
+
+    // === Gelenk-Limits: Min/Max für alle relevanten Joints (in rad) ===
+    std::map<std::string, std::pair<double, double>> joint_limits = {
+        {"thumb_opposition", {-0.35, 1.28}},
+        {"thumb_rotation", {-1.57, 1.57}},
+        {"index_mcp_adduction", {-0.5, 0.5}},
+        {"middle_mcp_adduction", {-0.5, 0.5}},
+        {"ring_mcp_adduction", {-0.5, 0.5}},
+        {"index_mcp_flexion", {0.0, 1.57}},
+        {"index_pip", {0.0, 1.57}},
+        {"middle_mcp_flexion", {0.0, 1.57}},
+        {"middle_pip", {0.0, 1.57}},
+        {"ring_mcp_flexion", {0.0, 1.57}},
+        {"ring_pip", {0.0, 1.57}},
+        {"thumb_mcp_flexion", {0.0, 1.57}},
+        {"thumb_pip", {0.0, 1.57}}
+    };
+
     // Aktuelle Joint-Werte
     std::map<std::string, double> current_joint_values_;
     
@@ -54,7 +103,7 @@ private:
     std::map<std::string, int> last_sent_positions_;
     
     // Deadband-Schwelle (minimale Änderung für Update)
-    const double DEADBAND_THRESHOLD = 0.02; // 0.02 rad ≈ 1.15°
+    const double DEADBAND_THRESHOLD = 0.005; // 0.005 rad ≈ 0.3° (weniger aggressiv)
 
     // Beispiel-Skalierung: Passe die Bereiche an deine Mechanik an!
     int rad_to_dynamixel(double rad) {
@@ -73,6 +122,14 @@ private:
         for (size_t i = 0; i < msg->name.size(); ++i) {
             const std::string& joint = msg->name[i];
             double value = msg->position[i];
+            // 1. Clamp auf Limits (wie in der URDF/GUI)
+            if (joint_limits.count(joint)) {
+                value = std::max(joint_limits[joint].first, std::min(value, joint_limits[joint].second));
+            }
+            // 2. Offset/Multiplier anwenden
+            if (offset_map.count(joint) && multiplier_map.count(joint)) {
+                value = value * multiplier_map[joint] + offset_map[joint];
+            }
             current_joint_values_[joint] = value;
         }
     }
