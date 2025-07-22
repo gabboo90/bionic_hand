@@ -86,6 +86,6 @@ def generate_launch_description():
         hand_description_launch,
         joint_state_publisher_gui,
         servo_mapper_node,
-        # read_write_node,
+        read_write_node,
         # leap_joint_publisher
     ])

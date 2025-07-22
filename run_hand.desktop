@@ -1,0 +1,8 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Bionic Hand starten
+Comment=Startet das Bionic Hand Script
+Exec=/home/gabi/Desktop/bionic_hand/run_hand.sh
+Icon=/home/gabi/Desktop/hand.png
+Terminal=true

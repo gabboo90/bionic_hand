@@ -113,14 +113,14 @@ private:
         {"index_mcp_adduction", {-0.5, 0.5}},
         {"middle_mcp_adduction", {-0.5, 0.5}},
         {"ring_mcp_adduction", {-0.5, 0.5}},
-        {"index_mcp_flexion", {0.0, 1.57}},
-        {"index_pip", {0.0, 1.57}},
-        {"middle_mcp_flexion", {0.0, 1.57}},
-        {"middle_pip", {0.0, 1.57}},
-        {"ring_mcp_flexion", {0.0, 1.57}},
-        {"ring_pip", {0.0, 1.57}},
-        {"thumb_mcp_flexion", {0.0, 1.57}},
-        {"thumb_pip", {0.0, 1.57}}
+        {"index_mcp_flexion", {-1.57, 1.57}},
+        {"index_pip", {-1.57, 1.57}},
+        {"middle_mcp_flexion", {-1.57, 1.57}},
+        {"middle_pip", {-1.57, 1.57}},
+        {"ring_mcp_flexion", {-1.57, 1.57}},
+        {"ring_pip", {-1.57, 1.57}},
+        {"thumb_mcp_flexion", {-1.57, 1.57}},
+        {"thumb_pip", {-1.57, 1.57}}
     };
 
     // Aktuelle Joint-Werte
@@ -140,9 +140,9 @@ private:
     }
     
     int rad_to_scservo(double rad) {
-        // 0 bis 1.57 rad → 0 bis 1023
-        int pos = static_cast<int>(rad * (1023.0 / 1.57));
-        return std::clamp(pos, 0, 1023);
+        // -1.57 bis +1.57 rad → 0 bis 4095
+        int pos = static_cast<int>( (rad + 1.57) * (4095.0 / (2 * 1.57)) );
+        return std::clamp(pos, 0, 4095);
     }
 
     void initialize_servos() {
