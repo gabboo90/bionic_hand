@@ -1,6 +1,5 @@
 #include <rclcpp/rclcpp.hpp>
 #include <sensor_msgs/msg/joint_state.hpp>
-#include "dynamixel_sdk_custom_interfaces/msg/set_position.hpp"
 #include <map>
 #include <string>
 #include <algorithm>
@@ -10,38 +9,65 @@
 #include <cmath>
 #include <cstdlib>
 #include "SCServo.h"
+#include "dynamixel_sdk/group_sync_write.h"
+#include "dynamixel_sdk/port_handler.h"
+#include "dynamixel_sdk/packet_handler.h"
 
 using namespace std::chrono_literals;
 
 class ServoMapperNode : public rclcpp::Node {
 public:
     ServoMapperNode() : Node("servo_mapper_node") {
-        // Declare parameters
-        this->declare_parameter<std::string>("port", "/dev/ttyACM0");
-        this->declare_parameter<int>("baudrate", 1000000);
+        // Neue Parameter für getrennte Ports/Baudraten
+        this->declare_parameter<std::string>("scservo_port", "/dev/scservo");
+        this->declare_parameter<int>("scservo_baudrate", 1000000);
+        this->declare_parameter<std::string>("dynamixel_port", "/dev/dynamixel");
+        this->declare_parameter<int>("dynamixel_baudrate", 4000000);
         
         joint_sub_ = this->create_subscription<sensor_msgs::msg::JointState>(
             "/joint_states", 50,
             std::bind(&ServoMapperNode::joint_callback, this, std::placeholders::_1));
         
-        // Publisher für Dynamixel (funktioniert bereits)
-        set_position_publisher_ = this->create_publisher<dynamixel_sdk_custom_interfaces::msg::SetPosition>("set_position", 10);
-        
         // Timer für kontrollierte Update-Rate
-        timer_ = this->create_wall_timer(36ms, std::bind(&ServoMapperNode::timer_callback, this));
+        timer_ = this->create_wall_timer(20ms, std::bind(&ServoMapperNode::timer_callback, this));
         
         RCLCPP_INFO(this->get_logger(), "Servo Mapper Node started!");
 
+        // Ports/Baudraten aus Parametern lesen
+        std::string scservo_port = this->get_parameter("scservo_port").as_string();
+        int scservo_baudrate = this->get_parameter("scservo_baudrate").as_int();
+        std::string dynamixel_port = this->get_parameter("dynamixel_port").as_string();
+        int dynamixel_baudrate = this->get_parameter("dynamixel_baudrate").as_int();
+
         // SCServo initialisieren
-        std::string port = this->get_parameter("port").as_string();
-        int baudrate = this->get_parameter("baudrate").as_int();
-        
-        if(!sm_st.begin(baudrate, port.c_str())){
-            RCLCPP_ERROR(this->get_logger(), "Failed to init SCServo at %s!", port.c_str());
+        if(!sm_st.begin(scservo_baudrate, scservo_port.c_str())){
+            RCLCPP_ERROR(this->get_logger(), "Failed to init SCServo at %s!", scservo_port.c_str());
             rclcpp::shutdown();
             return;
         }
-        RCLCPP_INFO(this->get_logger(), "SCServo initialized at %s", port.c_str());
+        RCLCPP_INFO(this->get_logger(), "SCServo initialized at %s", scservo_port.c_str());
+
+        // DynamixelSDK initialisieren
+        dxl_portHandler_ = dynamixel::PortHandler::getPortHandler(dynamixel_port.c_str());
+        dxl_packetHandler_ = dynamixel::PacketHandler::getPacketHandler(2.0);
+
+        if (!dxl_portHandler_->openPort()) {
+            RCLCPP_ERROR(this->get_logger(), "Dynamixel: Port konnte nicht geöffnet werden (%s)!", dynamixel_port.c_str());
+            rclcpp::shutdown();
+            return;
+        }
+        if (!dxl_portHandler_->setBaudRate(dynamixel_baudrate)) {
+            RCLCPP_ERROR(this->get_logger(), "Dynamixel: Baudrate konnte nicht gesetzt werden (%d)!", dynamixel_baudrate);
+            rclcpp::shutdown();
+            return;
+        }
+        RCLCPP_INFO(this->get_logger(), "Dynamixel initialized at %s", dynamixel_port.c_str());
+
+        // GroupSyncWrite für Goal Position (Adresse 116, 4 Byte)
+        dxl_groupSyncWrite_ = std::make_unique<dynamixel::GroupSyncWrite>(dxl_portHandler_, dxl_packetHandler_, 116, 4);
+
+        // Dynamixel-Servos initialisieren (Torque Enable)
+        initialize_dynamixel_servos();
 
         // Initialisierung
         initialize_servos();
@@ -49,6 +75,9 @@ public:
 
     ~ServoMapperNode() {
         sm_st.end();
+        if (dxl_portHandler_) {
+            dxl_portHandler_->closePort();
+        }
     }
 
 private:
@@ -130,8 +159,12 @@ private:
     // Hardware objects
     SMS_STS sm_st;
     rclcpp::Subscription<sensor_msgs::msg::JointState>::SharedPtr joint_sub_;
-    rclcpp::Publisher<dynamixel_sdk_custom_interfaces::msg::SetPosition>::SharedPtr set_position_publisher_;
     rclcpp::TimerBase::SharedPtr timer_;
+
+    // DynamixelSDK Objekte
+    dynamixel::PortHandler *dxl_portHandler_;
+    dynamixel::PacketHandler *dxl_packetHandler_;
+    std::unique_ptr<dynamixel::GroupSyncWrite> dxl_groupSyncWrite_;
 
     // Umrechnungen
     int rad_to_dynamixel(double rad) {
@@ -145,17 +178,31 @@ private:
         return std::clamp(pos, 0, 4095);
     }
 
+    void initialize_dynamixel_servos() {
+        // Torque Enable: Adresse 64, Wert 1
+        const uint16_t torque_addr = 64;
+        const uint8_t torque_enable = 1;
+        for (const auto& [joint, servo_id] : dynamixel_map) {
+            int comm_result = dxl_packetHandler_->write1ByteTxRx(dxl_portHandler_, servo_id, torque_addr, torque_enable);
+            if (comm_result == COMM_SUCCESS) {
+                RCLCPP_INFO(this->get_logger(), "Dynamixel %s (ID %d): Torque aktiviert.", joint.c_str(), servo_id);
+            } else {
+                RCLCPP_ERROR(this->get_logger(), "Dynamixel %s (ID %d): Torque-Enable fehlgeschlagen! Fehlercode: %d", joint.c_str(), servo_id, comm_result);
+            }
+            // Kurze Pause, damit die Servos Zeit haben
+            rclcpp::sleep_for(100ms);
+        }
+        RCLCPP_INFO(this->get_logger(), "Alle Dynamixel-Servos initialisiert (Torque Enable).");
+    }
+
     void initialize_servos() {
-        // Dynamixel (still arbeiten)
+        // Dynamixel (keine Logs)
         for (const auto& [joint, servo_id] : dynamixel_map) {
             double value = 0.0;
             int pos = rad_to_dynamixel(value);
             current_joint_values_[joint] = value;
             last_sent_positions_[joint] = pos;
-            auto msg = dynamixel_sdk_custom_interfaces::msg::SetPosition();
-            msg.id = servo_id;
-            msg.position = pos;
-            set_position_publisher_->publish(msg);
+            // Initiale Positionen werden im ersten timer_callback gesendet
         }
         
         // SCServos (loggen)
@@ -172,8 +219,8 @@ private:
             
             scservo_ids.push_back(servo_id);
             scservo_positions.push_back(pos);
-            scservo_speeds.push_back(2400);
-            scservo_accs.push_back(50);
+            scservo_speeds.push_back(4095);
+            scservo_accs.push_back(0);
             
             RCLCPP_INFO(this->get_logger(), "SCServo %s (ID %d) -> %d", joint.c_str(), servo_id, pos);
         }
@@ -190,6 +237,7 @@ private:
         for (size_t i = 0; i < msg->name.size(); ++i) {
             const std::string& joint = msg->name[i];
             double value = msg->position[i];
+            RCLCPP_INFO(this->get_logger(), "Empfangen: %s = %.3f", joint.c_str(), value);
             double original_value = value;
             
             // Nur bekannte Joints verarbeiten
@@ -223,6 +271,9 @@ private:
     void timer_callback() {
         if (current_joint_values_.empty()) return;
         
+        // Vor dem Loop: GroupSyncWrite-Parameter leeren
+        dxl_groupSyncWrite_->clearParam();
+
         // SCServo Updates sammeln
         std::vector<u8> scservo_ids;
         std::vector<s16> scservo_positions;
@@ -232,19 +283,7 @@ private:
         int scservo_changes = 0;
         
         for (const auto& [joint, value] : current_joint_values_) {
-            
-            if (dynamixel_map.count(joint)) {
-                // Dynamixel (still arbeiten, keine Logs)
-                int servo_id = dynamixel_map[joint];
-                int new_pos = rad_to_dynamixel(value);
-                
-                auto msg = dynamixel_sdk_custom_interfaces::msg::SetPosition();
-                msg.id = servo_id;
-                msg.position = new_pos;
-                set_position_publisher_->publish(msg);
-                last_sent_positions_[joint] = new_pos;
-                
-            } else if (scservo_map.count(joint)) {
+            if (scservo_map.count(joint)) {
                 // SCServo (debuggen)
                 int servo_id = scservo_map[joint];
                 int new_pos = rad_to_scservo(value);
@@ -258,9 +297,33 @@ private:
                 
                 scservo_ids.push_back(servo_id);
                 scservo_positions.push_back(new_pos);
-                scservo_speeds.push_back(2400);
+                scservo_speeds.push_back(4095);
                 scservo_accs.push_back(50);
                 last_sent_positions_[joint] = new_pos;
+            } else if (dynamixel_map.count(joint)) {
+                int servo_id = dynamixel_map[joint];
+                int new_pos = rad_to_dynamixel(value);
+
+                // Logging hinzufügen
+                RCLCPP_INFO(this->get_logger(), "TIMER: Dynamixel %s (ID %d): %d", joint.c_str(), servo_id, new_pos);
+
+                uint8_t param_goal_position[4];
+                param_goal_position[0] = DXL_LOBYTE(DXL_LOWORD(new_pos));
+                param_goal_position[1] = DXL_HIBYTE(DXL_LOWORD(new_pos));
+                param_goal_position[2] = DXL_LOBYTE(DXL_HIWORD(new_pos));
+                param_goal_position[3] = DXL_HIBYTE(DXL_HIWORD(new_pos));
+
+                dxl_groupSyncWrite_->addParam(servo_id, param_goal_position);
+                last_sent_positions_[joint] = new_pos;
+            }
+        }
+        
+        // Dynamixel SyncWrite senden
+        if (!dynamixel_map.empty()) {
+            int comm_result = dxl_groupSyncWrite_->txPacket();
+            RCLCPP_INFO(this->get_logger(), "Dynamixel SyncWrite gesendet.");
+            if (comm_result != COMM_SUCCESS) {
+                RCLCPP_ERROR(this->get_logger(), "Dynamixel SyncWrite fehlgeschlagen: %d", comm_result);
             }
         }
         
@@ -268,7 +331,6 @@ private:
         if (!scservo_ids.empty()) {
             sm_st.SyncWritePosEx(scservo_ids.data(), scservo_ids.size(), 
                                 scservo_positions.data(), scservo_speeds.data(), scservo_accs.data());
-            
             if (scservo_changes > 0) {
                 RCLCPP_INFO(this->get_logger(), "Sent %d SCServo changes", scservo_changes);
             }

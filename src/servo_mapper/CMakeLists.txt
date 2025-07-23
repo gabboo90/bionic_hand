@@ -9,6 +9,7 @@ find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(dynamixel_sdk_custom_interfaces REQUIRED)
+find_package(dynamixel_sdk REQUIRED)
 
 # SCServo Library erstellen
 file(GLOB SCServo_SOURCES
@@ -33,6 +34,7 @@ add_executable(servo_mapper_node src/servo_mapper_node.cpp)
 target_include_directories(servo_mapper_node PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../DynamixelSDK/ros/dynamixel_sdk/include>
   $<INSTALL_INTERFACE:include>
 )
 
@@ -41,6 +43,7 @@ ament_target_dependencies(servo_mapper_node
   rclcpp 
   sensor_msgs 
   dynamixel_sdk_custom_interfaces
+  dynamixel_sdk
 )
 
 # Link SCServo library
