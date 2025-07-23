@@ -309,15 +309,6 @@ private:
     };
     
     // Debug: Zeige die publizierten Werte
-    RCLCPP_INFO(this->get_logger(), "=== Publizierte Werte ===");
-    RCLCPP_INFO(this->get_logger(), "Index [0-3]: %f, %f, %f, %f", 
-                joint_msg.position[0], joint_msg.position[1], joint_msg.position[2], joint_msg.position[3]);
-    RCLCPP_INFO(this->get_logger(), "Middle [4-7]: %f, %f, %f, %f", 
-                joint_msg.position[4], joint_msg.position[5], joint_msg.position[6], joint_msg.position[7]);
-    RCLCPP_INFO(this->get_logger(), "Ring [8-11]: %f, %f, %f, %f", 
-                joint_msg.position[8], joint_msg.position[9], joint_msg.position[10], joint_msg.position[11]);
-    RCLCPP_INFO(this->get_logger(), "Thumb [12-16]: %f, %f, %f, %f, %f", 
-                joint_msg.position[12], joint_msg.position[13], joint_msg.position[14], joint_msg.position[15], joint_msg.position[16]);
     
     // Velocities (optional)
     joint_msg.velocity = std::vector<double>(joint_msg.name.size(), 0.0);
