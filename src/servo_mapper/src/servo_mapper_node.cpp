@@ -121,8 +121,8 @@ private:
     std::map<std::string, double> offset_map = {
         {"thumb_opposition", -0.3},
         {"thumb_rotation", +0.755},
-        {"index_mcp_adduction", 0.0},
-        {"middle_mcp_adduction", + 0.280},
+        {"index_mcp_adduction", + 0.1},
+        {"middle_mcp_adduction", + 0.4},
         {"ring_mcp_adduction", 0.0},
         {"index_mcp_flexion", 0.0},
         {"index_pip", 0.0},
